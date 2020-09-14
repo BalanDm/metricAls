@@ -23,8 +23,7 @@ public class MetricService {
         metricMap = new ConcurrentHashMap<>();
     }
 
-    @Async
-    public void increaseCount(String request, int status) {
+    public synchronized void increaseCount(String request, int status) {
         ConcurrentHashMap<Integer, Integer> statusMap = metricMap.get(request);
         if (statusMap == null) {
             statusMap = new ConcurrentHashMap<Integer, Integer>();

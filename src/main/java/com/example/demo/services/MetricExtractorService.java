@@ -52,7 +52,7 @@ public class MetricExtractorService {
                 file = Paths.get(jarDir.getPath() + "\\" + currentDate + ".json");
             }
             File inFile = file.toFile();
-            fileAppender.appendToArray(inFile, metricService.getFullMetric());
+            fileAppender.appendToArrayOrReplace(inFile, metricService.getFullMetric());
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
