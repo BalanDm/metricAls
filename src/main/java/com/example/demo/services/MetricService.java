@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -21,6 +22,8 @@ public class MetricService {
         this.metricExtractorService = metricExtractorService;
         metricMap = new ConcurrentHashMap<>();
     }
+
+    @Async
     public void increaseCount(String request, int status) {
         ConcurrentHashMap<Integer, Integer> statusMap = metricMap.get(request);
         if (statusMap == null) {

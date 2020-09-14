@@ -1,14 +1,10 @@
 package com.example.demo.services;
 
 import com.example.demo.utils.JsonFileAppender;
-import org.apache.commons.io.FileUtils;
-import org.json.CDL;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -27,14 +23,10 @@ public class MetricExtractorService {
     private JsonFileAppender fileAppender;
     private MetricService metricService;
 
-    @Autowired
-    public void setMetricService(MetricService metricService) {
-        this.metricService = metricService;
-    }
 
-    @Autowired
-    public void setFileAppender(JsonFileAppender fileAppender) {
+    public MetricExtractorService(JsonFileAppender fileAppender, @Lazy MetricService metricService) {
         this.fileAppender = fileAppender;
+        this.metricService = metricService;
     }
 
     public void extract() {
@@ -53,18 +45,15 @@ public class MetricExtractorService {
         try {
             SimpleDateFormat pattern = new SimpleDateFormat("yyyy-MM-dd");
             String currentDate = pattern.format(new Date());
-//        fileAppender.appendToArray();
             if (!new File(jarDir.getPath() + "\\" + currentDate + ".json").exists()) {
                 file = Paths.get(jarDir.getPath());
                 file = Files.createFile(file.resolve(currentDate +".json"));
             }else{
                 file = Paths.get(jarDir.getPath() + "\\" + currentDate + ".json");
             }
-            fileAppender.appendToArray(file.toFile(), metricService.getFullMetric());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            File inFile = file.toFile();
+            fileAppender.appendToArray(inFile, metricService.getFullMetric());
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
