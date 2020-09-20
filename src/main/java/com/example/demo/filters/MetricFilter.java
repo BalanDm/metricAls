@@ -29,6 +29,6 @@ public class MetricFilter implements Filter {
         chain.doFilter(request, response);
 
         int status = ((HttpServletResponse) response).getStatus();
-        metricService.increaseCount(req, status);
+        metricService.increaseCount(status);
     }
 }

@@ -23,19 +23,19 @@ public class JsonFileAppender {
         if (jsonFile.isDirectory()) {
             throw new IllegalArgumentException("File can not be a directory!");
         }
-
-        final JsonNode node = readArrayOrCreateNew(jsonFile);
-        if (node.isArray()) {
-            ArrayNode array = (ArrayNode) node;
-            for (Map.Entry entry : metricInfo.entrySet()) {
-                if (array.findParent(entry.getKey().toString()) == null) {
-                    array.addPOJO(entry);
-                    jsonMapper.writeValue(jsonFile, node);
-                } else {
-                    replaceFile(jsonFile, metricInfo);
-                }
-            }
-        }
+//
+//        final JsonNode node = readArrayOrCreateNew(jsonFile);
+//        if (node.isArray()) {
+//            ArrayNode array = (ArrayNode) node;
+//            for (Map.Entry entry : metricInfo.entrySet()) {
+//                if (array.findParent(entry.getKey().toString()) == null) {
+//                    array.addPOJO(entry);
+                    jsonMapper.writeValue(jsonFile, metricInfo);
+//                } else {
+//                    replaceFile(jsonFile, metricInfo);
+//                }
+//            }
+//        }
     }
 
     public void replaceFile(File file, Map<?, ?> metricInfo) {

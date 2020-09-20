@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class MetricService {
@@ -17,26 +18,15 @@ public class MetricService {
         this.metricExtractorService = metricExtractorService;
     }
 
-    private ConcurrentMap<String, ConcurrentHashMap<Integer, Integer>> metricMap;
+    private ConcurrentHashMap<Integer, AtomicInteger> metricMap;
+
     public MetricService(MetricExtractorService metricExtractorService) {
         this.metricExtractorService = metricExtractorService;
         metricMap = new ConcurrentHashMap<>();
     }
 
-    public synchronized void increaseCount(String request, int status) {
-        ConcurrentHashMap<Integer, Integer> statusMap = metricMap.get(request);
-        if (statusMap == null) {
-            statusMap = new ConcurrentHashMap<Integer, Integer>();
-        }
-
-        Integer count = statusMap.get(status);
-        if (count == null) {
-            count = 1;
-        } else {
-            count++;
-        }
-        statusMap.put(status, count);
-        metricMap.put(request, statusMap);
+    public synchronized void increaseCount(int status) {
+        metricMap.computeIfAbsent(status, k -> new AtomicInteger(0)).addAndGet(1);
         metricExtractorService.extract();
     }
 
